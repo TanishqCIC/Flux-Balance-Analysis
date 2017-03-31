@@ -2,7 +2,7 @@
 @author: Tanishq Kumar Dhangar
 """
 
-import cobra.io, json, os
+import cobra.io, json, os, sys, cobra.test
 from cobra.solvers import solver_dict, get_solver_name
 import genes_involved_reactions as gir
 import model_info as mi
@@ -19,7 +19,7 @@ def worker(fileName):
 	# print(multiprocessing.cpu_count())
 
 	cobraModel = cobra.io.load_json_model('data/' + fileName)
-		
+	
 	info=(mi.model(cobraModel))
 	
 	solution = cobraModel.optimize()
@@ -49,13 +49,25 @@ def worker(fileName):
 	print(rxn.reversibility)
 	"""
 
-	gene_id="Rv0904c"
+	gene_id="Rv2524c"
 	gn = cobraModel.genes.get_by_id(gene_id)
+	gd.single_del(cobraModel, gene_id)	
+	"""
 	print(gn.reactions)
+	"""
+	print(len(cobraModel.genes))
+
+	essential_gene = []
+	genes_done = []
+	
+	for index in range(0,len(cobraModel.genes)):
+		gene_id = (cobraModel.genes[index])
+		gd.single_del_all(cobraModel, gene_id, essential_gene , genes_done)
+	
 	
 
 
-
+	"""
 	
 	cobra.manipulation.delete_model_genes(cobraModel, ["Rv2524c"], cumulative_deletions=True)
 	print("after Knock-Out: %4d < flux_rxn < %4d" % (rxn.lower_bound, rxn.upper_bound))
@@ -65,7 +77,7 @@ def worker(fileName):
 	solver.solve_problem(lp)
 	print(solver.get_objective_value(lp))
 	
-	"""
+
 	with open('result/' + fileName, 'w') as handle:
 		json.dump(data, handle, sort_keys=True, indent=4)
 	"""
