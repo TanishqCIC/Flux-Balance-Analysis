@@ -21,6 +21,7 @@ def single_del(cobraModel, gene_id):
 
 	cobra.manipulation.undelete_model_genes(cobraModel)
 	
+
 def single_del_all(cobraModel, gene_id, essential_gene, genes_done):
 
 	rxn = cobraModel.reactions.get_by_id("biomass_Mtb_9_60atp")
@@ -57,3 +58,4 @@ def single_del_all(cobraModel, gene_id, essential_gene, genes_done):
 
 	genes_done.append(gene_id)
 	print('No. of essential genes are', len(essential_gene), ' out of ', len(genes_done))
+	return genes_done
