@@ -53,3 +53,21 @@ def trim(gene_name):
 				else:
 					gene.append(''.join([gene_name[alpha_index+4], gene_name[alpha_index+5], gene_name[alpha_index+6], gene_name[alpha_index+7], gene_name[alpha_index+8], gene_name[alpha_index+9]]))				
 	return gene				
+
+if  __name__ == '__main__':
+
+	print('Build started')
+
+	file_location = "F:\class_sem_4\ma_mam\Flux_BA\\final_list.xlsx"
+	workbook = xlrd.open_workbook(file_location)
+	sheet = workbook.sheet_by_index(0)
+
+	for i in range(0,122) :
+		pathway = sheet.cell_value(i,3)
+		print(pathway)
+		fileName = ''.join([pathway, '.xml'])
+		parse(fileName, index)
+		index+=1
+		print('Done ', i+1, ' out of 122')
+
+	print('Build Finished!')
