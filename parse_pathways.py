@@ -1,25 +1,41 @@
 import xml.etree.ElementTree
 import xlrd
-from openpyxl import Workbook
+import xlwt
+import json
 
-wb = Workbook()
-ws = wb.active
+wb = xlwt.Workbook()
+ws = wb.add_sheet("Sheet 1")
+
+
+
+def json_write(dest_file, p_name, gene, index):
+	
+	data = gene
+	
+	
+	index=index+1
+
+	with open('trim_1.txt', 'w') as outfile:
+		json.dump(data, outfile)
+	return index
 
 index = 1
-
+data = []
 def parse(fileName, index):
 
 	"""Writing name of .xml file into excel file cell 'A0'"""
 	
-	ws.cell(row=index, column=1).value = str(fileName[:-4])
+	pathway=str(fileName[:-4])
+	
 
-	j = 4
-	path=''.join(['pathways\\', fileName])
+	j = 0
+	path=''.join(['pathways/', fileName])
 	e = xml.etree.ElementTree.parse(path).getroot()
 	
 	i=0
-
 	
+	dest_file="pathway_parse_trim_3.1.txt"
+	index = 0
 	for atype in e.findall('entry'):
 		leaf = (atype.get('type'))
 		
@@ -27,12 +43,22 @@ def parse(fileName, index):
 			gene_name = (atype.get('name'))
 			i=i+1
 			gene_name = trim(gene_name)
-			(len(gene_name))
-			(gene_name)
+			print(len(gene_name))
+			
 			for beta_index in range(0, len(gene_name)):
-				ws.cell(row=index, column=j).value = str(gene_name[beta_index])
+
+				data.append({
+					'pathway name': pathway,
+					'gene name': str(gene_name[beta_index]),
+					'nos': j
+					})
+				#print(beta_index)
+				#print(gene_name[beta_index])
 				j+=1
-			wb.save("pathway_parse_trim_2.1.xlsx")
+				print('j', j)
+				
+				
+	index = json_write(dest_file ,pathway ,data, index)
 	print('No. of genes found are ', i)
 
 def trim(gene_name):
@@ -58,11 +84,11 @@ if  __name__ == '__main__':
 
 	print('Build started')
 
-	file_location = "F:\class_sem_4\ma_mam\Flux_BA\\final_list.xlsx"
+	file_location = "/media/tanishqcic/New Volume/class_sem_4/ma_mam/Flux_BA/final_list.xlsx"
 	workbook = xlrd.open_workbook(file_location)
 	sheet = workbook.sheet_by_index(0)
 
-	for i in range(0,122) :
+	for i in range(0, 122) :
 		pathway = sheet.cell_value(i,3)
 		print(pathway)
 		fileName = ''.join([pathway, '.xml'])
